@@ -15,7 +15,15 @@ export class DispositivoPage implements OnInit {
 
   ngOnInit() {
     let idDispositivo = this.router.snapshot.paramMap.get('id');
-    this.dispositivo = this.dServ.getDispositivo(idDispositivo);
+    //this.dispositivo = this.dServ.getDispositivo(idDispositivo);
+    //this.dServ.getDispositivo(1).then((disp) => {this.dispositivo = disp});
+
+    let tmp_listado:any = this.dServ.asyncgetDispositivos()
+    this.dServ.listado = tmp_listado
+    alert("LLEGA!!!")
+    let tmp:any = this.dServ.asyncgetDispositivo(1)
+    this.dispositivo = tmp
+
     console.log(this.dispositivo);
   }
 
