@@ -8,7 +8,11 @@ var cors = require('cors')
 var medicionRouter = require('./routes/medicion');
 var dispositivoRouter = require('./routes/dispositivo');
 
+
 var app = express();
+
+var corsOptions = {origin:'*', optionsSucessStatus:200};
+app.use(cors(corsOptions));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,7 +43,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-var corsOptions = {origin:'*',optionsSucessStatus:200};
-app.use(cors(corsOptions));
 
+console.log("YA USA CORSSSSSS")
 module.exports = app;
