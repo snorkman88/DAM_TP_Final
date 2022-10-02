@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import * as Highcharts from 'highcharts';
 import { Dispositivo } from '../model/Dispositivo';
 import { DispositivoService } from '../services/dispositivo.service';
+import { MedicionService } from '../services/medicion.service';
+import { Medicion } from '../model/Medicion';
+
+declare var require: any;
+require('highcharts/highcharts-more')(Highcharts);
+require('highcharts/modules/solid-gauge')(Highcharts);
 
 @Component({
   selector: 'app-dispositivo',
@@ -9,36 +16,108 @@ import { DispositivoService } from '../services/dispositivo.service';
   styleUrls: ['./dispositivo.page.scss'],
 })
 export class DispositivoPage implements OnInit {
-
   public dispositivo:Dispositivo;
-  constructor(private router:ActivatedRoute, private dServ:DispositivoService) { }
+  public medicion:Medicion;
+  public idDispositivo
+  public myChart;
+  private chartOptions;
 
-  ngOnInit() {
-    let idDispositivo = this.router.snapshot.paramMap.get('id');
-    console.log("ID DIpositivo es: "+ idDispositivo)
+  constructor(private router:ActivatedRoute, private dServ:DispositivoService, private mServ: MedicionService) { }
+
+  async ngOnInit() {
+    this.idDispositivo = this.router.snapshot.paramMap.get('id');
+  
     //this.dispositivo = this.dServ.getDispositivo(idDispositivo);
     //this.dServ.getDispositivo(1).then((disp) => {this.dispositivo = disp});
 
-    let tmp_listado:any = this.dServ.asyncgetDispositivos()
-    this.dServ.listado = tmp_listado
+    //let tmp_listado:any = this.dServ.asyncgetDispositivos()
+    //this.dServ.listado = tmp_listado
 
-    alert("LLEGA!!!")
+    let dispositivo_temp = await this.dServ.getDispositivo(this.idDispositivo)
+    this.dispositivo = dispositivo_temp
 
-    this.dServ.getDispositivo(idDispositivo)
-    .then((disp) => {this.dispositivo = disp
-    console.log("DISPOSITIVO: "+ JSON.stringify(disp))})
-    .catch((err) => {console.log("EL ERROR ES" + err)});
-
-    let tmp:any = this.dServ.asyncgetDispositivo(1)
-    this.dispositivo = tmp
-    console.log(this.dispositivo)
-
-  }
-
-  ionViewWillEnter(){
+    this.getPromiseData()
     
+    //this.generarChart();
+    }
+
+  async getPromiseData(){
+    try{    
+      let medicion_temporal = await this.mServ.getUltimaMedicion(this.idDispositivo) 
+      this.medicion = medicion_temporal
+    }
+    catch(err) {console.log("EL ERROR ES" + err)};
   }
 
-
-
+  generarChart() {
+    this.chartOptions={
+      chart: {
+          type: 'gauge',
+          plotBackgroundColor: null,
+          plotBackgroundImage: null,
+          plotBorderWidth: 0,
+          plotShadow: false,
+          height: '300px'
+        }
+        ,title: {
+          text: [this.dispositivo.nombre]
+        }
+        ,credits:{enabled:false}
+        ,pane: {
+            startAngle: -150,
+            endAngle: 150,
+            center: ['50%', '50%'],
+            size: '100%'
+        }
+        // the value axis
+      ,yAxis: {
+        min: 0,
+        max: 100,
+        minorTickInterval: 'auto',
+        minorTickWidth: 1,
+        minorTickLength: 10,
+        minorTickPosition: 'inside',
+        minorTickColor: '#666',
+        tickPixelInterval: 30,
+        tickWidth: 2,
+        tickPosition: 'inside',
+        tickLength: 10,
+        tickColor: '#666',
+        labels: {
+            step: 2,
+            rotation: 'auto'
+        },
+        title: {
+            text: 'Cb kPa'
+        },
+        plotBands: [{
+            from: 0,
+            to: 10,
+            color: '#000000' // black
+        }, {
+            from: 10,
+            to: 30,
+            color: '#55BF3B' // green
+        }, {
+            from: 30,
+            to: 60,
+            color: '#DDDF0D' // yellow
+        }, {
+            from: 60,
+            to: 100,
+            color: '#DF5353' // red
+        }]
+    }
+    ,
+    series: [{
+        name: 'Cb',
+        data: [this.medicion.valor],
+        tooltip: {
+            valueSuffix: ' Cb'
+        }
+    }]
+    };
+    console.log('DEBUG: Highcharts: '+ this.chartOptions.series);
+    this.myChart = Highcharts.chart('highcharts', this.chartOptions );
+  }
 }

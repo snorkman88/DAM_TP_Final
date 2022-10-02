@@ -16,18 +16,12 @@ export class HomePage implements OnInit {
   public dispositivo:Dispositivo;
   
   constructor(private router:ActivatedRoute, public dServ:DispositivoService) {}
-  ngOnInit() {
-    let idDispositivo = this.router.snapshot.paramMap.get('id');
+  async ngOnInit() {
+    //let idDispositivo = this.router.snapshot.paramMap.get('id');
 
     this.dServ.getDispositivo(1)
-    .then((disp) => {this.dispositivo = disp
-    console.log("DISPOSITIVO: "+ JSON.stringify(disp))})
-    .catch((err) => {console.log("EL ERROR ES" + err)});
 
-    this.dServ.getDispositivos()
-    .then((disp) => {this.dServ.listado = disp
-    console.log("DISPOSITIVOS: "+ JSON.stringify(disp))})
-    .catch((err) => {console.log("EL ERROR ES" + err)});
+    this.dServ.listado = await this.dServ.getDispositivos()
 
   }
 

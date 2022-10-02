@@ -12,11 +12,14 @@ export class DispositivoService {
 
   //golpear api con un servicio y traer todos los dispositivos y meterlos en una lista de Objetos Dispositivo
 
-  constructor(private _http: HttpClient ) {
+  constructor(private _http: HttpClient) {
    }
 
   getDispositivo(id):Promise<Dispositivo>{     
-    return this._http.get<Dispositivo>(this.urlApi+"/dispositivo/"+id).toPromise()
+    return this._http.get<Dispositivo>(this.urlApi+"/dispositivo/"+id).toPromise().then((disp: Dispositivo) => {
+      //console.log("DISPOSITIVO: "+ JSON.stringify(disp));
+      return disp;
+    });
   };
 
   async asyncgetDispositivo(id){
