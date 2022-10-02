@@ -25,20 +25,16 @@ export class DispositivoPage implements OnInit {
   constructor(private router:ActivatedRoute, private dServ:DispositivoService, private mServ: MedicionService) { }
 
   async ngOnInit() {
-    this.idDispositivo = this.router.snapshot.paramMap.get('id');
-  
-    //this.dispositivo = this.dServ.getDispositivo(idDispositivo);
-    //this.dServ.getDispositivo(1).then((disp) => {this.dispositivo = disp});
 
-    //let tmp_listado:any = this.dServ.asyncgetDispositivos()
-    //this.dServ.listado = tmp_listado
+    this.idDispositivo = this.router.snapshot.paramMap.get('id');
 
     let dispositivo_temp = await this.dServ.getDispositivo(this.idDispositivo)
     this.dispositivo = dispositivo_temp
 
-    this.getPromiseData()
-    
-    //this.generarChart();
+    await this.getPromiseData()
+    console.log("La medicion es: "+ this.medicion.valor)
+
+    //await this.generarChart();
     }
 
   async getPromiseData(){
@@ -49,7 +45,7 @@ export class DispositivoPage implements OnInit {
     catch(err) {console.log("EL ERROR ES" + err)};
   }
 
-  generarChart() {
+  async generarChart() {
     this.chartOptions={
       chart: {
           type: 'gauge',

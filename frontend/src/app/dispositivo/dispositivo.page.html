@@ -1,4 +1,3 @@
-
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
@@ -6,17 +5,16 @@
                 <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title>Dispositivo - {{dispositivo.nombre}}</ion-title>
+        <ion-title *ngIf="dispositivo && medicion">Dispositivo - {{dispositivo.nombre}} </ion-title>
     </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
     <div>Acá deberia traer mas información del dispositivo y su medida del sensor</div>
-    <div>
+    <div *ngIf="dispositivo && medicion">
         {{dispositivo.ubicacion}} {{medicion.valor}}
-
+        <div id="highcharts" style="width:100%; height:300px;"></div>
     </div>
-    <!-- <div id="highcharts" style="width:100%; height:300px;"></div> -->
 
     <ion-button expand="full" shape="round">Cambiar estado electrovalvula</ion-button>
     <ion-button expand="full" shape="round">Historico de mediciones</ion-button>
