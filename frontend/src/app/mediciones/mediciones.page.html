@@ -1,9 +1,37 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>mediciones</ion-title>
+    <ion-title>Mediciones</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  {{medicion.valor}}
+<ion-content *ngIf="mediciones && ultima_medicion">
+  <!-- {{ultima_medicion.valor}}
+  {{mediciones}} -->
+
+  <ion-content>
+    <ion-grid class="ion-text-center">
+      <ion-row class="header-row">
+        <ion-col>
+          <ion-text>Fecha</ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text> Valor </ion-text>
+        </ion-col>
+      </ion-row>
+  
+      <ion-row *ngFor="let med of mediciones" appResaltar>
+        <ion-col>
+          <ion-text>
+            {{med.fecha}}
+          </ion-text>
+        </ion-col>
+        <ion-col>
+          <ion-text>
+            <!-- {{med.valor | unidad:"Presion"}} -->
+            {{med.valor}}
+          </ion-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
 </ion-content>
