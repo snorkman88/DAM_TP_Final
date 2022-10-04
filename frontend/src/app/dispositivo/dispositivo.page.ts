@@ -5,6 +5,9 @@ import { Dispositivo } from '../model/Dispositivo';
 import { DispositivoService } from '../services/dispositivo.service';
 import { MedicionService } from '../services/medicion.service';
 import { Medicion } from '../model/Medicion';
+import { RiegoService } from '../services/riego.service';
+import { Riego } from '../model/Riego';
+
 
 declare var require: any;
 require('highcharts/highcharts-more')(Highcharts);
@@ -21,8 +24,10 @@ export class DispositivoPage implements OnInit {
   public idDispositivo
   public myChart;
   private chartOptions;
+  public estadoEv
 
-  constructor(private router:ActivatedRoute, private dServ:DispositivoService, private mServ: MedicionService) { }
+  constructor(private router:ActivatedRoute, private dServ:DispositivoService, private mServ: MedicionService, private lServ:RiegoService) {
+  }
 
   async ngOnInit() {
 
@@ -31,13 +36,31 @@ export class DispositivoPage implements OnInit {
     let dispositivo_temp = await this.dServ.getDispositivo(this.idDispositivo)
     this.dispositivo = dispositivo_temp
 
-    await this.getPromiseData()
+    await this.getMedicionPromiseData()
     console.log("La medicion es: "+ this.medicion.valor)
 
-    //await this.generarChart();
+    await this.getEstadoEVPromisedata(this.dispositivo.electrovalvulaId)
+    this.generarChart();
     }
 
-  async getPromiseData(){
+  async togglearEstadoEV() {
+      this.estadoEv = !this.estadoEv;
+      console.log('La electrovalvula del dispositivo' + this.dispositivo.nombre + ' esta ' + this.estadoEv);
+      let nuevo_evento: Riego = new Riego(0, new Date(), Number(this.estadoEv), this.dispositivo.electrovalvulaId);//crear esta dataclass "Logs"
+      this.lServ.postNuevoRiego(this.dispositivo.electrovalvulaId, nuevo_evento); //agregar nueva entrada de
+    }
+
+  async getEstadoEVPromisedata(idElectrovalvula){
+    try{
+      let estado_temporales:any = await this.lServ.getEstadoElectrovalvula(idElectrovalvula)
+      this.estadoEv = estado_temporales
+      console.log("La EV esta: "+JSON.stringify(this.estadoEv.apertura))
+    }
+    catch(err){console.log("EL ERROR ES" + err)}
+
+  }
+
+  async getMedicionPromiseData(){
     try{    
       let medicion_temporal = await this.mServ.getUltimaMedicion(this.idDispositivo) 
       this.medicion = medicion_temporal
@@ -49,8 +72,8 @@ export class DispositivoPage implements OnInit {
     this.chartOptions={
       chart: {
           type: 'gauge',
-          plotBackgroundColor: null,
-          plotBackgroundImage: null,
+          plotBackgroundColor: "#000000",
+          plotBackgroundImage: "#000000",
           plotBorderWidth: 0,
           plotShadow: false,
           height: '300px'
@@ -107,7 +130,7 @@ export class DispositivoPage implements OnInit {
     ,
     series: [{
         name: 'Cb',
-        data: [this.medicion.valor],
+        data: [Number(this.medicion.valor)],
         tooltip: {
             valueSuffix: ' Cb'
         }

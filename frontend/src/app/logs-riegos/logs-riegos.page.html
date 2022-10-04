@@ -1,10 +1,10 @@
-<ion-header>
+<ion-header *ngIf="riegos">
   <ion-toolbar>
-    <ion-title>Mediciones</ion-title>
+    <ion-title>Electrovalvula {{riegos[0].electrovalvulaId}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="mediciones && ultima_medicion">
+<ion-content *ngIf="riegos">
 
   <ion-content>
     <ion-grid class="ion-text-center">
@@ -13,22 +13,23 @@
           <ion-text>Fecha</ion-text>
         </ion-col>
         <ion-col>
-          <ion-text> Valor </ion-text>
+          <ion-text>Estado</ion-text>
         </ion-col>
       </ion-row>
   
-      <ion-row *ngFor="let med of mediciones" appResaltar>
+      <ion-row *ngFor="let entrada of riegos" appResaltar>
         <ion-col>
           <ion-text>
-            {{med.fecha}}
+            {{entrada.fecha}}
           </ion-text>
         </ion-col>
         <ion-col>
           <ion-text>
-            {{med.valor}}
+            {{entrada.apertura | valvula}} 
           </ion-text>
         </ion-col>
       </ion-row>
     </ion-grid>
   </ion-content>
+
 </ion-content>

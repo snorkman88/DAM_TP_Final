@@ -19,6 +19,10 @@ const routes: Routes = [
     path: 'medicion/:id',
     loadChildren: () => import('./mediciones/mediciones.module').then( m => m.MedicionesPageModule)
   },
+  {
+    path: 'logs-riegos/:id',
+    loadChildren: () => import('./logs-riegos/logs-riegos.module').then( m => m.LogsRiegosPageModule)
+  },
 ];
 
 @NgModule({

@@ -7,6 +7,7 @@ var cors = require('cors')
 
 var medicionRouter = require('./routes/medicion');
 var dispositivoRouter = require('./routes/dispositivo');
+var riegoRouter = require('./routes/riegos');
 
 
 var app = express();
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/dispositivo', dispositivoRouter);
 app.use('/api/medicion', medicionRouter);
+app.use('/api/riego', riegoRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
