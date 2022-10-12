@@ -62,6 +62,8 @@ Llegado este punto el proyecto estar funcionando de manera correcta en la direcc
 -POST /agregar
     Agrega una nueva medicion en la tabla dispositivos.
 ```
+
+## Riegos
 ```
 - GET /:electrovalvulaId/todas'
     Trae todas los logs de riegos de la valvula especificada en el path.
