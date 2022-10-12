@@ -30,5 +30,10 @@ export class RiegoService {
     })
   };
 
+  //INSERTAR UNA NUEVO VALOR DE MEDICION
+  postNuevaMedicion(fecha, valor, idDispositivo){
+    this._http.post(this.urlApi+"/medicion/agregar", {fecha, valor, idDispositivo}).toPromise().then(() => {
+    })
+  };
 
 }

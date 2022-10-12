@@ -48,6 +48,16 @@ export class DispositivoPage implements OnInit {
       console.log('La electrovalvula del dispositivo' + this.dispositivo.nombre + ' esta ' + this.estadoEv);
       let nuevo_evento: Riego = new Riego(0, new Date(), Number(this.estadoEv), this.dispositivo.electrovalvulaId);//crear esta dataclass "Logs"
       this.lServ.postNuevoRiego(this.dispositivo.electrovalvulaId, nuevo_evento); //agregar nueva entrada de
+      let nuevo_valor_sensor:number = this.getRandomInt(0, 100);
+      let fecha:Date = new Date()
+      this.lServ.postNuevaMedicion(fecha, nuevo_valor_sensor, this.dispositivo.dispositivoId);
+
+    }
+
+  getRandomInt(min=0, max) : number{
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min; 
     }
 
   async getEstadoEVPromisedata(idElectrovalvula){
